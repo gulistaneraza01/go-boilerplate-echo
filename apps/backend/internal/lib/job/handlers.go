@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/lib/email"
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog"
-	"github.com/sriniously/go-boilerplate/internal/config"
-	"github.com/sriniously/go-boilerplate/internal/lib/email"
 )
 
 var emailClient *email.Client

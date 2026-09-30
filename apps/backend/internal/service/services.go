@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/sriniously/go-boilerplate/internal/lib/job"
-	"github.com/sriniously/go-boilerplate/internal/repository"
-	"github.com/sriniously/go-boilerplate/internal/server"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/lib/job"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/repository"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/server"
 )
 
 type Services struct {

@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/database"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/lib/job"
+	loggerPkg "github.com/gulistaneraza01/go-boilerplate-echo/internal/logger"
 	"github.com/newrelic/go-agent/v3/integrations/nrredis-v9"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
-	"github.com/sriniously/go-boilerplate/internal/config"
-	"github.com/sriniously/go-boilerplate/internal/database"
-	"github.com/sriniously/go-boilerplate/internal/lib/job"
-	loggerPkg "github.com/sriniously/go-boilerplate/internal/logger"
 )
 
 type Server struct {

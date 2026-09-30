@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/sriniously/go-boilerplate/internal/server"
+import "github.com/gulistaneraza01/go-boilerplate-echo/internal/server"
 
 type Repositories struct{}
 

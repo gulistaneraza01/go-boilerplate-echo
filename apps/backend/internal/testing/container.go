@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
+	"github.com/gulistaneraza01/go-boilerplate-echo/internal/database"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog"
-	"github.com/sriniously/go-boilerplate/internal/config"
-	"github.com/sriniously/go-boilerplate/internal/database"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"

@@ -38,12 +38,14 @@ go-boilerplate/
 ### Installation
 
 1. Clone the repository:
+
 ```bash
-git clone https://github.com/sriniously/go-boilerplate.git
+git clone https://github.com/gulistaneraza01/go-boilerplate-echo.git
 cd go-boilerplate
 ```
 
 2. Install dependencies:
+
 ```bash
 # Install frontend dependencies
 bun install
@@ -54,6 +56,7 @@ go mod download
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp apps/backend/.env.example apps/backend/.env
 # Edit apps/backend/.env with your configuration
@@ -62,12 +65,14 @@ cp apps/backend/.env.example apps/backend/.env
 4. Start the database and Redis.
 
 5. Run database migrations:
+
 ```bash
 cd apps/backend
 task migrations:up
 ```
 
 6. Start the development server:
+
 ```bash
 # From root directory
 bun dev
