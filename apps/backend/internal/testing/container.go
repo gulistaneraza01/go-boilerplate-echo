@@ -53,7 +53,7 @@ func SetupTestDB(t *testing.T) (*TestDB, func()) {
 
 	mappedPort, err := pgContainer.MappedPort(ctx, "5432")
 	require.NoError(t, err, "failed to get mapped port")
-	port := mappedPort.Int()
+	port := int(mappedPort.Num())
 
 	// Make sure the test cleans up the container
 	t.Cleanup(func() {

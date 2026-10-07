@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
@@ -58,7 +59,7 @@ func main() {
 	// Setup HTTP server
 	srv.SetupHTTPServer(r)
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 
 	// Start server
 	go func() {

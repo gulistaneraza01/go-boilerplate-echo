@@ -16,7 +16,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
+    "@tailwindcss/vite": "^4.3.3",
     "@boilerplate/openapi": "workspace:*",
     "@boilerplate/zod": "workspace:*",
     "class-variance-authority": "^0.7.1",
@@ -33,16 +33,16 @@
     "@ts-rest/core": "^3.52.1",
     "axios": "^1.11.0",
     "react-hook-form": "^7.62.0",
-    "react-router-dom": "^7.7.1",
+    "react-router-dom": "^7.18.4",
     "sonner": "^2.0.7",
     "ts-pattern": "^5.8.0",
-    "zod": "^4.0.14"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^9.30.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
@@ -50,9 +50,9 @@
     "prettier": "^3.6.2",
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.4",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^7.3.7",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-       "wait-on": "^8.0.4"
+    "wait-on": "^8.0.4"
   }
 }
