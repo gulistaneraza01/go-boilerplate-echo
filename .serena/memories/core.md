@@ -14,5 +14,5 @@ Bun + Turborepo monorepo; Go backend lives inside but is NOT a turbo/bun workspa
 - Backend must run with CWD=`apps/backend` (reads `.env` and `templates/emails/` relative to CWD).
 - Go handlers are NOT generated from the ts-rest contracts; contract (`packages/openapi`) and Go routes are kept in sync by hand.
 - Generated artifacts are committed: `apps/backend/static/openapi.json` (from `packages/openapi` gen) and `apps/backend/templates/emails/*.html` (from `packages/emails` export). Edit the sources, regenerate, commit output.
-- `CLAUDE.md` at repo root mirrors this guidance; README files contain stale facts (`.env.example`, `task test`, `migrations:down`, underscore env names) — trust code/Taskfile over READMEs.
+- `CLAUDE.md` at repo root mirrors this guidance; README files contain stale facts (`task test`, `migrations:down`, underscore env names) — trust code/Taskfile over READMEs.
 - `AGENTS.md` is auto-managed by turbo; don't hand-edit.

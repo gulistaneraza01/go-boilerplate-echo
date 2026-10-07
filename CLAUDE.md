@@ -17,7 +17,7 @@ Bun + Turborepo monorepo. The Go backend lives inside it but is **not** a Turbo 
 ### Backend (run from `apps/backend` — the app reads `.env` and `templates/emails/` relative to CWD)
 
 ```bash
-cp .env.sample .env            # note: .env.sample, not .env.example as the READMEs say
+cp .env.example .env
 task run                       # go run ./cmd/go-boilerplate (needs Postgres + Redis)
 go build ./... && go vet ./...
 golangci-lint run ./...        # config is golangci-lint v2 format; v1 binaries refuse it

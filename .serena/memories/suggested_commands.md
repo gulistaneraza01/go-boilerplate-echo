@@ -1,7 +1,7 @@
 # Suggested commands
 
 ## Backend (CWD `apps/backend`)
-- Setup env: `cp .env.sample .env` (file is `.env.sample`).
+- Setup env: `cp .env.example .env`.
 - Run: `task run` (needs Postgres + Redis reachable per `.env`).
 - Build/vet: `go build ./... && go vet ./...`
 - Lint: `golangci-lint run ./...` (needs golangci-lint v2).

@@ -6,7 +6,7 @@ config.LoadConfig → logger.NewLoggerService (New Relic) → database.Migrate (
 
 ## Config (`internal/config`)
 - Env only, koanf env provider, prefix `BOILERPLATE_`, path delimiter `.` → vars look like `BOILERPLATE_DATABASE.HOST`. `godotenv/autoload` loads `.env` from CWD.
-- `validate:"required"` on struct fields; missing → fatal at startup. Every new config field needs a `.env.sample` entry.
+- `validate:"required"` on struct fields; missing → fatal at startup. Every new config field needs a `.env.example` entry.
 - Redis address is `host:port` (passed to `redis.Options.Addr` and `asynq.RedisClientOpt.Addr`), never a `redis://` URL.
 
 ## Request handling
