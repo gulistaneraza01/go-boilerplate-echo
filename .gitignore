@@ -56,3 +56,5 @@ tsconfig.tsbuildinfo
 .env
 .turbo
 .vscode
+.env.*
+!.env.sample
