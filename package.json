@@ -9,7 +9,13 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean && rimraf node_modules"
+    "clean": "turbo run clean && rimraf node_modules",
+    "prepare": "husky"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "packageManager": "bun@1.2.13",
   "engines": {
@@ -20,7 +26,10 @@
     "packages/*"
   ],
   "devDependencies": {
-    "turbo": "^2.5.5",
-    "typescript": "^5.8.3"
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "husky": "^9.1.7",
+    "turbo": "^2.11.7",
+    "typescript": "^5.9.3"
   }
 }

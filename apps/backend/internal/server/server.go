@@ -103,12 +103,17 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return fmt.Errorf("failed to shutdown HTTP server: %w", err)
 	}
 
+	// Stop workers before closing the connections they depend on
+	if s.Job != nil {
+		s.Job.Stop()
+	}
+
 	if err := s.DB.Close(); err != nil {
 		return fmt.Errorf("failed to close database connection: %w", err)
 	}
 
-	if s.Job != nil {
-		s.Job.Stop()
+	if err := s.Redis.Close(); err != nil {
+		return fmt.Errorf("failed to close redis connection: %w", err)
 	}
 
 	return nil

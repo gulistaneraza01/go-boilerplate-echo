@@ -71,6 +71,10 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerConfig
 		return nil, fmt.Errorf("failed to parse pgx pool config: %w", err)
 	}
 
+	pgxPoolConfig.MaxConns = int32(cfg.Database.MaxOpenConns)
+	pgxPoolConfig.MaxConnLifetime = time.Duration(cfg.Database.ConnMaxLifetime) * time.Second
+	pgxPoolConfig.MaxConnIdleTime = time.Duration(cfg.Database.ConnMaxIdleTime) * time.Second
+
 	// Add New Relic PostgreSQL instrumentation
 	if loggerService != nil && loggerService.GetApplication() != nil {
 		pgxPoolConfig.ConnConfig.Tracer = nrpgx5.NewTracer()

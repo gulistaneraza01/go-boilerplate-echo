@@ -19,8 +19,13 @@ func NewRouter(s *server.Server, h *handler.Handlers, services *service.Services
 
 	router.HTTPErrorHandler = middlewares.Global.GlobalErrorHandler
 
+	// Trust X-Forwarded-For only from loopback/private-network proxies, so clients
+	// can't spoof their IP to dodge the rate limiter
+	router.IPExtractor = echo.ExtractIPFromXFFHeader()
+
 	// global middlewares
 	router.Use(
+		middlewares.Global.Recover(),
 		echoMiddleware.RateLimiterWithConfig(echoMiddleware.RateLimiterConfig{
 			Store: echoMiddleware.NewRateLimiterMemoryStore(rate.Limit(20)),
 			DenyHandler: func(c echo.Context, identifier string, err error) error {
@@ -47,7 +52,6 @@ func NewRouter(s *server.Server, h *handler.Handlers, services *service.Services
 		middlewares.Tracing.EnhanceTracing(),
 		middlewares.ContextEnhancer.EnhanceContext(),
 		middlewares.Global.RequestLogger(),
-		middlewares.Global.Recover(),
 	)
 
 	// register system routes
