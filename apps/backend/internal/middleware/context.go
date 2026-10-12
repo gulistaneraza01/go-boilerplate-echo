@@ -16,6 +16,10 @@ const (
 	LoggerKey   = "logger"
 )
 
+type ctxKey string
+
+const loggerCtxKey ctxKey = LoggerKey
+
 type ContextEnhancer struct {
 	server *server.Server
 }
@@ -56,7 +60,7 @@ func (ce *ContextEnhancer) EnhanceContext() echo.MiddlewareFunc {
 			c.Set(LoggerKey, &contextLogger)
 
 			// Create a new context with the logger
-			ctx := context.WithValue(c.Request().Context(), LoggerKey, &contextLogger)
+			ctx := context.WithValue(c.Request().Context(), loggerCtxKey, &contextLogger)
 			c.SetRequest(c.Request().WithContext(ctx))
 
 			return next(c)

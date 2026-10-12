@@ -14,6 +14,8 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 )
 
+const timeFormat = "2006-01-02 15:04:05"
+
 // LoggerService manages New Relic integration and logger creation
 type LoggerService struct {
 	nrApp *newrelic.Application
@@ -80,7 +82,7 @@ func NewLoggerWithService(cfg *config.ObservabilityConfig, loggerService *Logger
 	}
 
 	// Don't set global level - let each logger have its own level
-	zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
+	zerolog.TimeFieldFormat = timeFormat
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 	var writer io.Writer
@@ -100,7 +102,7 @@ func NewLoggerWithService(cfg *config.ObservabilityConfig, loggerService *Logger
 		}
 	} else {
 		// Development mode - use console writer
-		consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05"}
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: timeFormat}
 		writer = consoleWriter
 	}
 
@@ -141,7 +143,7 @@ func WithTraceContext(logger zerolog.Logger, txn *newrelic.Transaction) zerolog.
 func NewPgxLogger(level zerolog.Level) zerolog.Logger {
 	writer := zerolog.ConsoleWriter{
 		Out:        os.Stdout,
-		TimeFormat: "2006-01-02 15:04:05",
+		TimeFormat: timeFormat,
 		FormatFieldValue: func(i any) string {
 			switch v := i.(type) {
 			case string:
