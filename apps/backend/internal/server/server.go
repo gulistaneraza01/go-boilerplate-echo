@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
@@ -32,10 +33,17 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerPkg.Lo
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 
+	redisOpts, err := redis.ParseURL(cfg.Redis.Address)
+	if err != nil {
+		var urlErr *url.Error
+		if errors.As(err, &urlErr) {
+			err = urlErr.Err
+		}
+		return nil, fmt.Errorf("invalid redis address: %w", err)
+	}
+
 	// Redis client with New Relic integration
-	redisClient := redis.NewClient(&redis.Options{
-		Addr: cfg.Redis.Address,
-	})
+	redisClient := redis.NewClient(redisOpts)
 
 	// Add New Relic Redis hooks if available
 	if loggerService != nil && loggerService.GetApplication() != nil {
@@ -52,7 +60,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerPkg.Lo
 	}
 
 	// job service
-	jobService := job.NewJobService(logger, cfg)
+	jobService := job.NewJobService(logger, redisOpts)
 	jobService.InitHandlers(cfg, logger)
 
 	// Start job server

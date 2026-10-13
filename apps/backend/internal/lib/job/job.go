@@ -1,8 +1,8 @@
 package job
 
 import (
-	"github.com/gulistaneraza01/go-boilerplate-echo/internal/config"
 	"github.com/hibiken/asynq"
+	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 )
 
@@ -12,15 +12,21 @@ type JobService struct {
 	logger *zerolog.Logger
 }
 
-func NewJobService(logger *zerolog.Logger, cfg *config.Config) *JobService {
-	redisAddr := cfg.Redis.Address
+// redisConnOpt lets asynq build its client from the full parsed Redis URL options.
+type redisConnOpt struct{ opts *redis.Options }
 
-	client := asynq.NewClient(asynq.RedisClientOpt{
-		Addr: redisAddr,
-	})
+func (r redisConnOpt) MakeRedisClient() interface{} {
+	opts := *r.opts
+	return redis.NewClient(&opts)
+}
+
+func NewJobService(logger *zerolog.Logger, redisOpts *redis.Options) *JobService {
+	clientOpt := redisConnOpt{opts: redisOpts}
+
+	client := asynq.NewClient(clientOpt)
 
 	server := asynq.NewServer(
-		asynq.RedisClientOpt{Addr: redisAddr},
+		clientOpt,
 		asynq.Config{
 			Concurrency: 10,
 			Queues: map[string]int{
