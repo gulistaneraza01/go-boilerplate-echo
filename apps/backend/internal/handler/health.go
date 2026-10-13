@@ -69,12 +69,12 @@ func (h *HealthHandler) CheckHealth(c echo.Context) error {
 	// Database connection metrics are automatically captured by New Relic nrpgx5 integration
 
 	// Check Redis connectivity
-	if h.server.Redis != nil {
+	if h.server.RedisJob != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		redisStart := time.Now()
-		if err := h.server.Redis.Ping(ctx).Err(); err != nil {
+		if err := h.server.RedisJob.Ping(ctx).Err(); err != nil {
 			checks["redis"] = map[string]interface{}{
 				"status":        "unhealthy",
 				"response_time": time.Since(redisStart).String(),

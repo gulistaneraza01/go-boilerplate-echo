@@ -22,7 +22,8 @@ type Server struct {
 	Logger        *zerolog.Logger
 	LoggerService *loggerPkg.LoggerService
 	DB            *database.Database
-	Redis         *redis.Client
+	RedisJob      *redis.Client
+	RedisCache    *redis.Client
 	httpServer    *http.Server
 	Job           *job.JobService
 }
@@ -33,34 +34,18 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerPkg.Lo
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 
-	redisOpts, err := redis.ParseURL(cfg.Redis.Address)
+	redisJob, err := newRedisClient("redis job", cfg.RedisJob.Address, logger, loggerService)
 	if err != nil {
-		var urlErr *url.Error
-		if errors.As(err, &urlErr) {
-			err = urlErr.Err
-		}
-		return nil, fmt.Errorf("invalid redis address: %w", err)
+		return nil, err
 	}
 
-	// Redis client with New Relic integration
-	redisClient := redis.NewClient(redisOpts)
-
-	// Add New Relic Redis hooks if available
-	if loggerService != nil && loggerService.GetApplication() != nil {
-		redisClient.AddHook(nrredis.NewHook(redisClient.Options()))
-	}
-
-	// Test Redis connection
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := redisClient.Ping(ctx).Err(); err != nil {
-		logger.Error().Err(err).Msg("Failed to connect to Redis, continuing without Redis")
-		// Don't fail startup if Redis is unavailable
+	redisCache, err := newRedisClient("redis cache", cfg.RedisCache.Address, logger, loggerService)
+	if err != nil {
+		return nil, err
 	}
 
 	// job service
-	jobService := job.NewJobService(logger, redisOpts)
+	jobService := job.NewJobService(logger, redisJob.Options())
 	jobService.InitHandlers(cfg, logger)
 
 	// Start job server
@@ -73,7 +58,8 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerPkg.Lo
 		Logger:        logger,
 		LoggerService: loggerService,
 		DB:            db,
-		Redis:         redisClient,
+		RedisJob:      redisJob,
+		RedisCache:    redisCache,
 		Job:           jobService,
 	}
 
@@ -120,9 +106,39 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return fmt.Errorf("failed to close database connection: %w", err)
 	}
 
-	if err := s.Redis.Close(); err != nil {
-		return fmt.Errorf("failed to close redis connection: %w", err)
+	if err := s.RedisJob.Close(); err != nil {
+		return fmt.Errorf("failed to close redis job connection: %w", err)
+	}
+
+	if err := s.RedisCache.Close(); err != nil {
+		return fmt.Errorf("failed to close redis cache connection: %w", err)
 	}
 
 	return nil
+}
+
+func newRedisClient(name, address string, logger *zerolog.Logger, loggerService *loggerPkg.LoggerService) (*redis.Client, error) {
+	opts, err := redis.ParseURL(address)
+	if err != nil {
+		var urlErr *url.Error
+		if errors.As(err, &urlErr) {
+			err = urlErr.Err
+		}
+		return nil, fmt.Errorf("invalid %s address: %w", name, err)
+	}
+
+	client := redis.NewClient(opts)
+
+	if loggerService != nil && loggerService.GetApplication() != nil {
+		client.AddHook(nrredis.NewHook(client.Options()))
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := client.Ping(ctx).Err(); err != nil {
+		logger.Error().Err(err).Str("client", name).Msg("Failed to connect to Redis, continuing without it")
+	}
+
+	return client, nil
 }

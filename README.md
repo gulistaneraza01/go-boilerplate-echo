@@ -110,7 +110,7 @@ The backend uses environment variables prefixed with `BOILERPLATE_`. Key variabl
 - `BOILERPLATE_DATABASE_*` - PostgreSQL connection settings
 - `BOILERPLATE_SERVER_*` - Server configuration
 - `BOILERPLATE_AUTH_*` - Authentication settings
-- `BOILERPLATE_REDIS_*` - Redis connection
+- `BOILERPLATE_REDIS_JOB.*` / `BOILERPLATE_REDIS_CACHE.*` - Redis for background jobs / cache
 - `BOILERPLATE_EMAIL_*` - Email service configuration
 - `BOILERPLATE_OBSERVABILITY_*` - Monitoring settings
 

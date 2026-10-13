@@ -89,8 +89,11 @@ func SetupTestDB(t *testing.T) (*TestDB, func()) {
 		Integration: config.IntegrationConfig{
 			ResendAPIKey: "test-key",
 		},
-		Redis: config.RedisConfig{
-			Address: "localhost:6379",
+		RedisJob: config.RedisConfig{
+			Address: "redis://localhost:6379",
+		},
+		RedisCache: config.RedisConfig{
+			Address: "redis://localhost:6380",
 		},
 		Auth: config.AuthConfig{
 			SecretKey: "test-secret",
