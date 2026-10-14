@@ -53,7 +53,25 @@
                             "response_time"
                           ]
                         },
-                        "redis": {
+                        "redis_job": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string"
+                            },
+                            "response_time": {
+                              "type": "string"
+                            },
+                            "error": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "response_time"
+                          ]
+                        },
+                        "redis_cache": {
                           "type": "object",
                           "properties": {
                             "status": {

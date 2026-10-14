@@ -6,6 +6,7 @@
     "module": "NodeNext", // Use Node.js-style module resolution with ESM support
     "target": "es2022", // Target modern ES2022 JavaScript features
     "lib": ["es2022"], // Include ES2022 standard library definitions
+    "types": ["node"], // Load Node.js globals (fs, console, process)
     "moduleDetection": "force", // Ensure explicit module detection rules
     "esModuleInterop": true, // Enable compatibility with CommonJS modules
     "resolveJsonModule": true, // Allow importing JSON files

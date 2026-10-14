@@ -12,6 +12,7 @@ export const ZHealthResponse = z.object({
   environment: z.string(),
   checks: z.object({
     database: ZHealthCheck,
-    redis: ZHealthCheck.optional(),
+    redis_job: ZHealthCheck.optional(),
+    redis_cache: ZHealthCheck.optional(),
   }),
 });

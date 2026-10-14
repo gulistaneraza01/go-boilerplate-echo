@@ -10,6 +10,7 @@ import (
 	"github.com/gulistaneraza01/go-boilerplate-echo/internal/server"
 
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 )
 
 type HealthHandler struct {
@@ -68,32 +69,49 @@ func (h *HealthHandler) CheckHealth(c echo.Context) error {
 
 	// Database connection metrics are automatically captured by New Relic nrpgx5 integration
 
-	// Check Redis connectivity
-	if h.server.RedisJob != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
+	// Check Redis connectivity. Jobs stop without redis_job, so it fails the
+	// overall check; losing redis_cache only degrades performance.
+	redisChecks := []struct {
+		name     string
+		client   *redis.Client
+		critical bool
+	}{
+		{"redis_job", h.server.RedisJob, true},
+		{"redis_cache", h.server.RedisCache, false},
+	}
+	for _, rc := range redisChecks {
+		if rc.client == nil {
+			continue
+		}
 
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		redisStart := time.Now()
-		if err := h.server.RedisJob.Ping(ctx).Err(); err != nil {
-			checks["redis"] = map[string]interface{}{
+		err := rc.client.Ping(ctx).Err()
+		cancel()
+
+		if err != nil {
+			checks[rc.name] = map[string]interface{}{
 				"status":        "unhealthy",
 				"response_time": time.Since(redisStart).String(),
 				"error":         err.Error(),
 			}
-			logger.Error().Err(err).Dur("response_time", time.Since(redisStart)).Msg("redis health check failed")
+			if rc.critical {
+				isHealthy = false
+			}
+			logger.Error().Err(err).Str("check", rc.name).Dur("response_time", time.Since(redisStart)).Msg("redis health check failed")
 			h.recordHealthCheckError(map[string]interface{}{
-				"check_type":       "redis",
+				"check_type":       rc.name,
 				"operation":        "health_check",
-				"error_type":       "redis_unhealthy",
+				"error_type":       rc.name + "_unhealthy",
 				"response_time_ms": time.Since(redisStart).Milliseconds(),
 				"error_message":    err.Error(),
 			})
 		} else {
-			checks["redis"] = map[string]interface{}{
+			checks[rc.name] = map[string]interface{}{
 				"status":        "healthy",
 				"response_time": time.Since(redisStart).String(),
 			}
-			logger.Info().Dur("response_time", time.Since(redisStart)).Msg("redis health check passed")
+			logger.Info().Str("check", rc.name).Dur("response_time", time.Since(redisStart)).Msg("redis health check passed")
 		}
 	}
 
