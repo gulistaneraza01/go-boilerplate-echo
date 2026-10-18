@@ -42,6 +42,35 @@ services:
       timeout: 3s
       retries: 10
 
+  # S3-compatible object storage (API :9000, console :9001)
+  rustfs:
+    image: rustfs/rustfs:latest
+    environment:
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - rustfs-data:/data
+
+  # One-shot: creates the dev bucket, then exits
+  rustfs-init:
+    image: amazon/aws-cli:latest
+    depends_on:
+      - rustfs
+    environment:
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      AWS_DEFAULT_REGION: us-east-1
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        until aws --endpoint-url http://rustfs:9000 s3 ls >/dev/null 2>&1; do sleep 1; done
+        aws --endpoint-url http://rustfs:9000 s3 mb s3://boilerplate || true
+
 volumes:
   postgres-data:
   redis-job-data:
+  rustfs-data:

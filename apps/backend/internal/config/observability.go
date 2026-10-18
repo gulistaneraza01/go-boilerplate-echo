@@ -52,7 +52,7 @@ func DefaultObservabilityConfig() *ObservabilityConfig {
 			Enabled:  true,
 			Interval: 30 * time.Second,
 			Timeout:  5 * time.Second,
-			Checks:   []string{"database", "redis"},
+			Checks:   []string{"database", "redis_job", "redis_cache"},
 		},
 	}
 }
