@@ -19,6 +19,7 @@ type Config struct {
 	RedisJob      RedisConfig          `koanf:"redis_job" validate:"required"`
 	RedisCache    RedisConfig          `koanf:"redis_cache" validate:"required"`
 	Integration   IntegrationConfig    `koanf:"integration" validate:"required"`
+	AWS           AWSConfig            `koanf:"aws" validate:"required"`
 	Observability *ObservabilityConfig `koanf:"observability"`
 }
 
@@ -52,6 +53,18 @@ type RedisConfig struct {
 
 type IntegrationConfig struct {
 	ResendAPIKey string `koanf:"resend_api_key" validate:"required"`
+}
+
+type AWSConfig struct {
+	Region          string   `koanf:"region" validate:"required"`
+	AccessKeyID     string   `koanf:"access_key_id" validate:"required_with=SecretAccessKey"`
+	SecretAccessKey string   `koanf:"secret_access_key" validate:"required_with=AccessKeyID"`
+	S3              S3Config `koanf:"s3" validate:"required"`
+}
+
+type S3Config struct {
+	EndpointURL string `koanf:"endpoint_url"`
+	Bucket      string `koanf:"bucket" validate:"required"`
 }
 
 type AuthConfig struct {
